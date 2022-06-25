@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 import { SideBar } from './components/SideBar';
 import { Content } from './components/Content';
@@ -42,14 +42,21 @@ export function App() {
   }, []);
 
   useEffect(() => {
+    getAllFilms(selectedGenreId)
+    getAllGenres(selectedGenreId)
+  }, [selectedGenreId]);
+
+  const getAllFilms = useCallback((selectedGenreId: number) => {
     api.get<MovieProps[]>(`movies/?Genre_id=${selectedGenreId}`).then(response => {
       setMovies(response.data);
     });
+  }, [selectedGenreId])
 
+  const getAllGenres = useCallback((selectedGenreId: number) => {
     api.get<GenreResponseProps>(`genres/${selectedGenreId}`).then(response => {
       setSelectedGenre(response.data);
     })
-  }, [selectedGenreId]);
+  }, [selectedGenreId])
 
   function handleClickButton(id: number) {
     setSelectedGenreId(id);
